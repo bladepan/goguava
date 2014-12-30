@@ -1,0 +1,6 @@
+{
+    "key1" : "hello",
+    "obj1" : {
+        "key1" : "obj1.key1"
+    }
+}
