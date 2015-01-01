@@ -9,6 +9,7 @@ type ChainableHandler func(http.ResponseWriter, *http.Request, http.HandlerFunc)
 func NoopHandlerFunc(http.ResponseWriter, *http.Request) {
 }
 
+// wrap a chainable and a handlerFunc
 func WrapHandlerFunc(c ChainableHandler, f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		c(w, r, f)
