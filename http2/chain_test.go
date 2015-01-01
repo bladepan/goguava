@@ -1,7 +1,6 @@
 package http2
 
 import (
-	"log"
 	"net/http"
 	"testing"
 )

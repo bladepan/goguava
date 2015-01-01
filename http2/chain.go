@@ -1,20 +1,17 @@
 package http2
 
 import (
-	"log"
 	"net/http"
 )
 
-type ChainableHandler interface {
-	ServeHTTP(http.ResponseWriter, *http.Request, http.HandlerFunc)
-}
+type ChainableHandler func(http.ResponseWriter, *http.Request, http.HandlerFunc)
 
 func NoopHandlerFunc(http.ResponseWriter, *http.Request) {
 }
 
 func WrapHandlerFunc(c ChainableHandler, f http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		c.ServeHTTP(w, r, f)
+		c(w, r, f)
 	}
 }
 
@@ -36,7 +33,7 @@ func AsChainableHandler(f http.HandlerFunc) ChainableHandler {
 	handler := &simpleChainableHandler{
 		impl: f,
 	}
-	return handler
+	return handler.ServeHTTP
 }
 
 type handlerChain struct {
@@ -48,11 +45,11 @@ func (h *handlerChain) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	handlerLen := len(h.handlers)
 	switch {
 	case h.index == handlerLen-1:
-		h.handlers[h.index].ServeHTTP(w, r, NoopHandlerFunc)
+		h.handlers[h.index](w, r, NoopHandlerFunc)
 	default:
 		currentHandler := h.handlers[h.index]
 		h.index++
-		currentHandler.ServeHTTP(w, r, h.ServeHTTP)
+		currentHandler(w, r, h.ServeHTTP)
 	}
 }
 
