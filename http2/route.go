@@ -2,11 +2,11 @@ package http2
 
 import (
 	"net/http"
-	"string"
+	"strings"
 )
 
 const (
-	prefixMatch iota
+	prefixMatch = iota
 	exactMatch
 	matchAll
 )
@@ -29,7 +29,7 @@ func (route *Route) Match(r *http.Request) bool {
 	}
 }
 
-func Compile(string s) *Route {
+func Compile(s string) *Route {
 	s = strings.TrimSpace(s)
 	route := &Route{
 		Name:      s,

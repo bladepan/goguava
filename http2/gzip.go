@@ -31,7 +31,3 @@ func GzipHandler(w http.ResponseWriter, r *http.Request, inner http.HandlerFunc)
 	gzr := gzipResponseWriter{Writer: gz, ResponseWriter: w}
 	inner(gzr, r)
 }
-
-func NewGzipHandler(inner http.HandlerFunc) http.HandlerFunc {
-	return WrapHandlerFunc(GzipHandler, inner)
-}
